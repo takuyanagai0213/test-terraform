@@ -1,0 +1,63 @@
+name: "Terraform Apply"
+description: "Terraform Apply"
+
+inputs:
+  terraform-version:
+    description: "Terraform version"
+    required: true
+  working-directory:
+    description: "working directory"
+    required: true
+  github-token:
+    description: "GitHub Access Token"
+    required: true
+  retl-workflow-service-account:
+    description: "rETL Workflow Service Account Json"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: "Terraform Setup"
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: ${{ inputs.terraform-version }}
+
+    - name: "Terraform Init"
+      id: init
+      working-directory: ${{ inputs.working-directory }}
+      shell: bash
+      run: terraform init -no-color
+
+    - name: "Terraform Apply"
+      id: apply
+      working-directory: ${{ inputs.working-directory }}
+      shell: bash
+      env:
+        TF_VAR_TEST_WORKFLOW_SERVICE_ACCOUNT: ${{ inputs.retl-workflow-service-account }}
+      run: terraform apply -auto-approve -no-color
+
+    - uses: actions/github-script@v6
+      env:
+        APPLY: "terraform\n${{ steps.apply.outputs.stdout }}"
+      with:
+        github-token: ${{ inputs.github-token }}
+        script: |
+          const output = `#### Terraform Apply ✅\`${{ steps.apply.outcome }}\`
+
+          <details><summary>Show Apply</summary>
+
+          \`\`\`\n
+          ${process.env.APPLY}
+          \`\`\`
+
+          </details>
+
+          *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`${{ inputs.working-directory }}\`, Workflow: \`${{ github.workflow }}\`*`;
+
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: output
+          })

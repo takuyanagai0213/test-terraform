@@ -1,0 +1,86 @@
+name: "Terraform Plan"
+description: "Terraform Plan"
+
+inputs:
+  terraform-version:
+    description: "Terraform version"
+    required: true
+  working-directory:
+    description: "working directory"
+    required: true
+  github-token:
+    description: "GitHub Access Token"
+    required: true
+  test-workflow-service-account:
+    description: "test Workflow Service Account Json"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: "Terraform Setup"
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: ${{ inputs.terraform-version }}
+
+    - name: "Terraform Format"
+      id: fmt
+      working-directory: ${{ inputs.working-directory }}
+      shell: bash
+      run: terraform fmt -check -recursive
+
+    - name: "Terraform Init"
+      id: init
+      working-directory: ${{ inputs.working-directory }}
+      shell: bash
+      run: terraform init -no-color
+
+    - name: Terraform Validate
+      id: validate
+      working-directory: ${{ inputs.working-directory }}
+      shell: bash
+      run: terraform validate -no-color
+
+    - name: "Terraform Plan"
+      id: plan
+      working-directory: ${{ inputs.working-directory }}
+      shell: bash
+      env:
+        TF_VAR_test_workflow_service_account: ${{ inputs.test-workflow-service-account }}
+      run: terraform plan -no-color
+
+    - uses: actions/github-script@v6
+      env:
+        PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+      with:
+        github-token: ${{ inputs.github-token }}
+        script: |
+          const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+          #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+          #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
+          <details><summary>Validation Output</summary>
+
+          \`\`\`\n
+          ${{ steps.validate.outputs.stdout }}
+          \`\`\`
+
+          </details>
+
+          #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+
+          <details><summary>Show Plan</summary>
+
+          \`\`\`\n
+          ${process.env.PLAN}
+          \`\`\`
+
+          </details>
+
+          *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`${{ inputs.working-directory }}\`, Workflow: \`${{ github.workflow }}\`*`;
+
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: output
+          })

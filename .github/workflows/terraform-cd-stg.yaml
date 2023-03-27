@@ -1,0 +1,57 @@
+name: "Terraform CD for staging"
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+    paths:
+      - "terraform/staging/**"
+
+permissions:
+  id-token: write
+  contents: write
+  issues: write
+  pull-requests: write
+
+env:
+  terraform-version: 1.1.7
+  tfmigrate-version: 0.3.3
+  working-directory: terraform/environments/staging
+  workload-identity-provider: projects/34389937598/locations/global/workloadIdentityPools/terraform-pool/providers/terraform-gh-provider
+  gcp-service-account: terraform@datahive-staging.iam.gserviceaccount.com
+
+jobs:
+  cd:
+    name: "Terraform CD"
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+
+    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: "Google Auth"
+        uses: "google-github-actions/auth@v0"
+        with:
+          workload_identity_provider: ${{ env.workload-identity-provider }}
+          service_account: ${{ env.gcp-service-account }}
+      - name: "TFMigrate Apply"
+        uses: ./.github/actions/tfmigrate-apply
+        id: migrate-apply
+        with:
+          terraform-version: ${{ env.terraform-version }}
+          tfmigrate-version: ${{ env.tfmigrate-version }}
+          working-directory: ${{ env.working-directory }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: "Terraform Apply"
+        uses: ./.github/actions/terraform-apply
+        id: apply
+        with:
+          terraform-version: ${{ env.terraform-version }}
+          working-directory: ${{ env.working-directory }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          test-workflow-service-account: ${{ secrets.TF_VAR_TEST_WORKFLOW_SERVICE_ACCOUNT }}
