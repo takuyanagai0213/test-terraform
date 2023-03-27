@@ -14,6 +14,9 @@ inputs:
   test-workflow-service-account:
     description: "test Workflow Service Account Json"
     required: true
+  credentials-json:
+    description: "rETL Workflow Service Account Json"
+    required: true
 
 runs:
   using: "composite"
@@ -39,7 +42,9 @@ runs:
       id: validate
       working-directory: ${{ inputs.working-directory }}
       shell: bash
-      run: terraform validate -no-color
+      run: |
+        echo ${{ inputs.credentials-json }} >> credentials.json
+        terraform validate -no-color
 
     - name: "Terraform Plan"
       id: plan
@@ -47,8 +52,9 @@ runs:
       shell: bash
       env:
         TF_VAR_test_workflow_service_account: ${{ inputs.test-workflow-service-account }}
-      run: terraform plan -no-color
-
+      run: |
+        echo ${{ inputs.credentials-json }} >> credentials.json
+        terraform plan -no-color
     - uses: actions/github-script@v6
       env:
         PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"

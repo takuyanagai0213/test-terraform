@@ -11,6 +11,17 @@ variable "zone" {
   type        = string
 }
 
+variable "terraform_sa_roles" {
+  description = "Terraform SA Roles"
+  type        = list(string)
+  default = [
+    "roles/editor",
+    "roles/resourcemanager.projectIamAdmin",
+    "roles/iam.serviceAccountAdmin",
+    "roles/secretmanager.admin",
+    "roles/iam.workloadIdentityPoolAdmin",
+  ]
+}
 variable "test_workflow_service_account" {
   type = string
 
