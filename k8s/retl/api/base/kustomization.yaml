@@ -1,8 +1,0 @@
-resources:
-  - deployment.yaml
-  - namespace.yaml
-  - serviceaccount.yaml
-configMapGenerator:
-  - name: site-conf
-    files:
-      - site.conf=configs/site.conf
