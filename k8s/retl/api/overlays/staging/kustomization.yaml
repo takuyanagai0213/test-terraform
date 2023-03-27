@@ -1,8 +1,0 @@
-namespace: test-api
-bases:
-  - ../../base
-patchesStrategicMerge:
-  - deployment.yaml
-  - serviceaccount.yaml
-resources:
-  - test_workflow_service_account.yaml

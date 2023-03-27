@@ -1,9 +1,0 @@
-namespace: external-secrets
-resources:
-  - external-secrets/templates/deployment.yaml
-  - external-secrets/templates/rbac.yaml
-  - external-secrets/templates/service.yaml
-  - external-secrets/templates/serviceaccount.yaml
-  - external-secrets/templates/crds/external-secrets.io_clustersecretstores.yaml
-  - external-secrets/templates/crds/external-secrets.io_externalsecrets.yaml
-  - external-secrets/templates/crds/external-secrets.io_secretstores.yaml

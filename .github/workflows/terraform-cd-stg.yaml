@@ -17,9 +17,9 @@ permissions:
 env:
   terraform-version: 1.1.7
   tfmigrate-version: 0.3.3
-  working-directory: terraform/staging
+  working-directory: terraform/environments/staging
   workload-identity-provider: projects/34389937598/locations/global/workloadIdentityPools/terraform-pool/providers/terraform-gh-provider
-  gcp-service-account: terraform@terraform-dev-abcd.iam.gserviceaccount.com
+  gcp-service-account: terraform@datahive-staging.iam.gserviceaccount.com
 
 jobs:
   cd:
