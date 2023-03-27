@@ -14,6 +14,9 @@ inputs:
   retl-workflow-service-account:
     description: "rETL Workflow Service Account Json"
     required: true
+  credentials-json:
+    description: "rETL Workflow Service Account Json"
+    required: true
 
 runs:
   using: "composite"
@@ -34,8 +37,11 @@ runs:
       working-directory: ${{ inputs.working-directory }}
       shell: bash
       env:
+        GOOGLE_APPLICATION_CREDENTIALS: ./credentials.json
         TF_VAR_TEST_WORKFLOW_SERVICE_ACCOUNT: ${{ inputs.retl-workflow-service-account }}
-      run: terraform apply -auto-approve -no-color
+      run: |
+        echo ${{ inputs.credentials-json }} >> credentials.json
+        terraform apply -auto-approve -no-color
 
     - uses: actions/github-script@v6
       env:
