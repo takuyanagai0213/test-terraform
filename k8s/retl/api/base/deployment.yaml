@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: test-api
+  name: test-api
+spec:
+  selector:
+    matchLabels:
+      app: test-api
+  template:
+    metadata:
+      labels:
+        app: test-api
+    spec:
+      serviceAccountName: test-api-ksa
+      volumes:
+        - name: web-sock
+          emptyDir: {}
+        - name: site-conf
+          configMap:
+            name: site-conf
+      containers:
+        - name: app
+          image: launcher.gcr.io/google/nginx1
+          ports:
+          - containerPort: 3000
+          volumeMounts:
+            - mountPath: /app/tmp/sockets
+              name: web-sock
+        - name: nginx
+          image: launcher.gcr.io/google/nginx1
+          ports:
+            - name: http-server
+              containerPort: 80
+          volumeMounts:
+          - name: site-conf
+            mountPath: /etc/nginx/conf.d
+          - name: web-sock
+            mountPath: /app/tmp/sockets

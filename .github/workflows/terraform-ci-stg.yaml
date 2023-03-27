@@ -16,9 +16,9 @@ permissions:
 env:
   terraform-version: 1.1.7
   tfmigrate-version: 0.3.3
-  working-directory: terraform/environments/staging
+  working-directory: terraform/staging
   workload-identity-provider: projects/34389937598/locations/global/workloadIdentityPools/terraform-pool/providers/terraform-gh-provider
-  gcp-service-account: terraform@datahive-staging.iam.gserviceaccount.com
+  gcp-service-account: terraform@terraform-dev-abcd.iam.gserviceaccount.com
 
 jobs:
   ci:
@@ -37,13 +37,6 @@ jobs:
         with:
           workload_identity_provider: ${{ env.workload-identity-provider }}
           service_account: ${{ env.gcp-service-account }}
-      - name: "TFMigrate Plan"
-        uses: ./.github/actions/tfmigrate-plan
-        id: migrate-plan
-        with:
-          terraform-version: ${{ env.terraform-version }}
-          working-directory: ${{ env.working-directory }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: "Terraform Plan"
         uses: ./.github/actions/terraform-plan
         id: plan
