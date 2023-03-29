@@ -56,3 +56,4 @@ resource "google_service_account_iam_binding" "secret_manager_iam_binding" {
     "serviceAccount:${var.project_id}.svc.id.goog[external-secrets/external-secrets-ksa]"
   ]
 }
+#
