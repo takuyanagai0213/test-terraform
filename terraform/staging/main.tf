@@ -57,3 +57,4 @@ resource "google_service_account_iam_binding" "secret_manager_iam_binding" {
   ]
 }
 #
+#
