@@ -18,43 +18,72 @@
 #   }
 # }
 
-resource "google_secret_manager_secret" "test_workflow_service_account" {
-  secret_id = "test-workflow-service-account"
+# resource "google_secret_manager_secret" "test_workflow_service_account" {
+#   secret_id = "test-workflow-service-account"
+
+#   lifecycle {
+#     prevent_destroy = true
+#   }
+
+#   replication {
+#     automatic = true
+#   }
+# }
+
+# resource "google_secret_manager_secret_version" "test_workflow_service_account" {
+#   secret      = google_secret_manager_secret.test_workflow_service_account.id
+#   secret_data = var.test_workflow_service_account
+# }
+
+# resource "google_service_account" "secret_manager" {
+#   account_id   = "secret-manager"
+#   display_name = "secret-manager"
+# }
+
+# resource "google_project_iam_binding" "secret_manager_project_iam_binding" {
+#   project = var.project_id
+#   role    = "roles/secretmanager.secretAccessor"
+#   members = [
+#     "serviceAccount:${google_service_account.secret_manager.email}"
+#   ]
+# }
+
+# resource "google_service_account_iam_binding" "secret_manager_iam_binding" {
+#   service_account_id = google_service_account.secret_manager.name
+#   role               = "roles/iam.workloadIdentityUser"
+
+#   members = [
+#     "serviceAccount:${var.project_id}.svc.id.goog[external-secrets/external-secrets-ksa]"
+#   ]
+# }
+#
+#
+resource "google_compute_network" "vpc_network" {
+  name                    = "my-custom-mode-network"
+  auto_create_subnetworks = false
+  mtu                     = 1460
+}
+
+resource "google_compute_subnetwork" "default" {
+  name          = "my-custom-subnet"
+  ip_cidr_range = "10.0.1.0/24"
+  region        = "us-west1"
+  network       = google_compute_network.vpc_network.id
+}
+resource "google_secret_manager_secret" "test_secret" {
+  secret_id = "test-secret"
+
 
   lifecycle {
     prevent_destroy = true
   }
 
   replication {
-    automatic = true
+    auto {}
   }
 }
 
-resource "google_secret_manager_secret_version" "test_workflow_service_account" {
-  secret      = google_secret_manager_secret.test_workflow_service_account.id
-  secret_data = var.test_workflow_service_account
+resource "google_secret_manager_secret_version" "test" {
+  secret = google_secret_manager_secret.test_secret.id
+  secret_data = jsonencode(var.test_secret)
 }
-
-resource "google_service_account" "secret_manager" {
-  account_id   = "secret-manager"
-  display_name = "secret-manager"
-}
-
-resource "google_project_iam_binding" "secret_manager_project_iam_binding" {
-  project = var.project_id
-  role    = "roles/secretmanager.secretAccessor"
-  members = [
-    "serviceAccount:${google_service_account.secret_manager.email}"
-  ]
-}
-
-resource "google_service_account_iam_binding" "secret_manager_iam_binding" {
-  service_account_id = google_service_account.secret_manager.name
-  role               = "roles/iam.workloadIdentityUser"
-
-  members = [
-    "serviceAccount:${var.project_id}.svc.id.goog[external-secrets/external-secrets-ksa]"
-  ]
-}
-#
-#
