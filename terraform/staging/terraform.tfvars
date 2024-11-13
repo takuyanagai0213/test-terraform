@@ -7,5 +7,3 @@ test_secret = {
     "username": "admin"
     "password": "admin"
 }
-
-# test_secret = "{\n    \"username\": \"admin\",\n    \"password\": \"admin\"\n}"
