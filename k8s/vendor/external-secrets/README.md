@@ -2,7 +2,15 @@
 
 ## templateの生成
 
-以下のコマンドをdatahive-manifestsディレクトリ直下で実行する
+helm repoの追加/更新
+
+```sh
+$ helm repo add external-secrets https://charts.external-secrets.io
+# OR
+$ helm repo update
+```
+
+以下のコマンドをmonopoly-manifestsディレクトリ直下で実行する
 
 ```sh
 $ helm template external-secrets external-secrets/external-secrets \

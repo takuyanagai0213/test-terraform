@@ -22,16 +22,11 @@ variable "terraform_sa_roles" {
     "roles/iam.workloadIdentityPoolAdmin",
   ]
 }
-# variable "test_workflow_service_account" {
-#   type = string
-
-#   sensitive = true
-# }
 
 variable "test_secret" {
   type = map(string)
-  # default = {
-  #   username = "admin"
-  #   password = "admin"
-  # }
+  default = {
+    username = "admin"
+    password = "admin"
+  }
 }

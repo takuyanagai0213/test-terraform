@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: my-app-api
+  name: my-app-api
+spec:
+  selector:
+    matchLabels:
+      app: my-app-api
+  template:
+    metadata:
+      labels:
+        app: my-app-api
+    spec:
+      containers:
+        - name: app
+          env:
+            - name: username
+              valueFrom:
+                secretKeyRef:
+                  name: test-secret
+                  key: username
+            - name: password
+              valueFrom:
+                secretKeyRef:
+                  name: test-secret
+                  key: password

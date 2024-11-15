@@ -4,20 +4,6 @@ resource "google_storage_bucket" "default" {
   force_destroy = false
 }
 
-resource "google_compute_network" "vpc_network" {
-  name                    = "my-custom-mode-network"
-  auto_create_subnetworks = false
-  mtu                     = 1460
-}
-
-resource "google_compute_subnetwork" "default" {
-  name          = "my-custom-subnet"
-  ip_cidr_range = "10.0.1.0/24"
-  region        = "us-west1"
-  network       = google_compute_network.vpc_network.id
-}
-
-# __generated__ by Terraform from "projects/terraform-dev-abcd/topics/test-topic"
 resource "google_pubsub_topic" "test_topic" {
   kms_key_name               = null
   labels                     = {}
@@ -26,42 +12,34 @@ resource "google_pubsub_topic" "test_topic" {
   project                    = "terraform-dev-abcd"
 }
 
-# resource "google_secret_manager_secret" "test_secret" {
-#   secret_id = "test-secret"
-#
-#
-#   lifecycle {
-#     prevent_destroy = true
-#   }
-#
-#   replication {
-#     auto {}
-#   }
-# }
-#
-# resource "google_secret_manager_secret_version" "test" {
-#   secret = google_secret_manager_secret.test_secret.id
-#   secret_data = jsonencode(var.test_secret)
-# }
-# __generated__ by Terraform
-# Please review these resources and move them into your main configuration files.
+resource "google_secret_manager_secret" "test_secret" {
+  secret_id = "test-secret"
 
-# resource "google_container_cluster" "staging_cluster" {
-#   name             = "nagai-dev"
-#   location         = "asia-northeast1"
-#   enable_autopilot = true
 
-#   # min_master_version = "1.24.7-gke.900"
+  lifecycle {
+    prevent_destroy = true
+  }
 
-#   # If the issue is resolved in the future, remove ip_allocation_policy block below.
-#   # https://github.com/hashicorp/terraform-provider-google/issues/10782
-#   ip_allocation_policy {}
+  replication {
+    auto {}
+  }
+}
 
-#   binary_authorization {
-#     evaluation_mode = "DISABLED"
-#   }
+resource "google_secret_manager_secret_version" "test" {
+  secret = google_secret_manager_secret.test_secret.id
+  secret_data = jsonencode(var.test_secret)
+}
 
-#   gateway_api_config {
-#     channel = "CHANNEL_STANDARD"
-#   }
-# }
+resource "google_service_account" "external_secrets" {
+  account_id   = "external-secrets"
+  display_name = "external-secrets"
+}
+
+resource "google_project_iam_member" "external_secrets" {
+  project = var.project_id
+  for_each = toset([
+    "roles/secretmanager.secretAccessor",
+  ])
+  role   = each.key
+  member = "serviceAccount:${google_service_account.external_secrets.email}"
+}
