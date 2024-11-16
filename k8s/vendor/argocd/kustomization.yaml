@@ -20,12 +20,12 @@ resources:
   - argo-cd/templates/argocd-configs/argocd-secret.yaml
   - argo-cd/templates/argocd-configs/argocd-ssh-known-hosts-cm.yaml
   - argo-cd/templates/argocd-configs/argocd-tls-certs-cm.yaml
-  - argo-cd/templates/argocd-notifications/clusterrole.yaml
-  - argo-cd/templates/argocd-notifications/clusterrolebinding.yaml
   - argo-cd/templates/argocd-notifications/deployment.yaml
   - argo-cd/templates/argocd-notifications/role.yaml
   - argo-cd/templates/argocd-notifications/rolebinding.yaml
   - argo-cd/templates/argocd-notifications/serviceaccount.yaml
+  - argo-cd/templates/argocd-repo-server/clusterrole.yaml
+  - argo-cd/templates/argocd-repo-server/clusterrolebinding.yaml
   - argo-cd/templates/argocd-repo-server/deployment.yaml
   - argo-cd/templates/argocd-repo-server/role.yaml
   - argo-cd/templates/argocd-repo-server/rolebinding.yaml
@@ -46,10 +46,5 @@ resources:
   - argo-cd/templates/dex/rolebinding.yaml
   - argo-cd/templates/dex/service.yaml
   - argo-cd/templates/dex/serviceaccount.yaml
-  - argo-cd/templates/redis-secret-init/job.yaml
-  - argo-cd/templates/redis-secret-init/role.yaml
-  - argo-cd/templates/redis-secret-init/rolebinding.yaml
-  - argo-cd/templates/redis-secret-init/serviceaccount.yaml
   - argo-cd/templates/redis/deployment.yaml
-  - argo-cd/templates/redis/health-configmap.yaml
   - argo-cd/templates/redis/service.yaml
