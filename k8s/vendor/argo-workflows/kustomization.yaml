@@ -1,0 +1,23 @@
+namespace: argo
+resources:
+ - argo-workflows/templates/controller/workflow-aggregate-roles.yaml
+ - argo-workflows/templates/controller/workflow-controller-cluster-roles.yaml
+ - argo-workflows/templates/controller/workflow-controller-config-map.yaml
+ - argo-workflows/templates/controller/workflow-controller-crb.yaml
+ - argo-workflows/templates/controller/workflow-controller-deployment.yaml
+ - argo-workflows/templates/controller/workflow-controller-sa.yaml
+ - argo-workflows/templates/controller/workflow-rb.yaml
+ - argo-workflows/templates/controller/workflow-role.yaml
+ - argo-workflows/templates/crds/argoproj.io_clusterworkflowtemplates.yaml
+ - argo-workflows/templates/crds/argoproj.io_cronworkflows.yaml
+ - argo-workflows/templates/crds/argoproj.io_workflowartifactgctasks.yaml
+ - argo-workflows/templates/crds/argoproj.io_workfloweventbindings.yaml
+ - argo-workflows/templates/crds/argoproj.io_workflows.yaml
+ - argo-workflows/templates/crds/argoproj.io_workflowtaskresults.yaml
+ - argo-workflows/templates/crds/argoproj.io_workflowtasksets.yaml
+ - argo-workflows/templates/crds/argoproj.io_workflowtemplates.yaml
+ - argo-workflows/templates/server/server-cluster-roles.yaml
+ - argo-workflows/templates/server/server-crb.yaml
+ - argo-workflows/templates/server/server-deployment.yaml
+ - argo-workflows/templates/server/server-sa.yaml
+ - argo-workflows/templates/server/server-service.yaml
