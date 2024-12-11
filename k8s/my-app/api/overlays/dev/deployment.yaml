@@ -15,14 +15,14 @@ spec:
     spec:
       containers:
         - name: app
-          env:
-            - name: username
-              valueFrom:
-                secretKeyRef:
-                  name: test-secret
-                  key: username
-            - name: password
-              valueFrom:
-                secretKeyRef:
-                  name: test-secret
-                  key: password
+          # env:
+          #   - name: username
+          #     valueFrom:
+          #       secretKeyRef:
+          #         name: test-secret
+          #         key: username
+          #   - name: password
+          #     valueFrom:
+          #       secretKeyRef:
+          #         name: test-secret
+          #         key: password
