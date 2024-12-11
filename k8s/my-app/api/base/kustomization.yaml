@@ -4,3 +4,4 @@ namespace: my-app-api
 resources:
   - namespace.yaml
   - deployment.yaml
+  - service.yaml
