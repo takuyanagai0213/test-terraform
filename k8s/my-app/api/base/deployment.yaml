@@ -5,6 +5,7 @@ metadata:
     app: my-app-api
   name: my-app-api
 spec:
+  replicas: 2
   selector:
     matchLabels:
       app: my-app-api
